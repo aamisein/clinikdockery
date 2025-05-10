@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load jalali_tags %}
+
+{% block content %}
+<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+    <!-- Search Box -->
+    <div class=" mb-4 bg sm:mb-8 ">
+        <form method="get" class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            <input type="text" name="search" value="{{ search_query }}" 
+                   class="placeholder-gray-600  bg-indigo-50 text-gray-600 flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="جستجو در نام، نام خانوادگی، شماره تلفن یا نوع خدمت...">
+            <button type="submit" 
+                    class="px-4 sm:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm sm:text-base">
+                جستجو
+            </button>
+        </form>
+    </div>
+
+    <!-- Visits List -->
+    <div class="opacity-85 max-w-6xl max-auto  bg-[#C5C9A4]  p-6 shadow-lg rounded-lg ">
+        <h2 class="text-2xl font-bold text-[#dd7c27] mb-4 ">دکتر آرمان کربلایی فر | مراجعین کلینیک زیبایی</h2>
+        <div class="overflow-x-auto">
+            <table class="class= min-w-full border-collapse border border-gray-200 shadow-2xl rounded-lg">
+                <thead >
+                    <tr class= " bg-[#FC9F5B] text-white">
+                     <th class="px-6 py-3 text-right">نام</th>
+                     <th class="px-6 py-3 text-right">شماره همراه</th>
+                     <th class="px-6 py-3 text-right">طرح درمان</th>
+                     <th class="px-3 py-3 text-right">تاریخ ویزیت</th>
+                     <!-- <th class="px-3 py-3 text-right">ساعت ویزیت</th>43   -->
+                     <th class="px-6 py-3 text-right">وضعیت</th>
+                     <!-- <th class=" px-6 py-3 text-center">عملیات</th> -->
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 ">
+                    {% for visit in visits %}
+                        <tr class="border-b  hover:bg-[#C9C3A5]">
+                        <td class="px-6 py-3"> {{ visit.first_name}} {{visit.last_name}}</td>
+                        <td class=" px-6 py-3"> {{visit.phone}}</td>
+                        <td class="px-6 py-3"> {{ visit.service.name }}</td>
+                        <td class="px-6 py-3" id="visit-date-1">{{visit.current_visit_date}}</td>
+                        <!-- <td class="px-6 py-3" id="visit-time-1"></td> -->
+                        <!-- <td class=" px-6 py-3 text-yellow-600 font-bold">تایید شد</td> -->
+                        <td class="px-6 py-3 flex justify-center space-x-2">
+                            <a href="{% url 'visits:visit_update' visit.pk %}?next={% url 'visits:visit_list' %}" 
+                               class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500">ویرایش</a>
+                            <a href="{% url 'visits:visit_delete' visit.pk %}?next={% url 'visits:visit_list' %}" 
+                               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">حذف</a>
+                        </td>
+                     </tr>
+    
+                    {%endfor%}
+    
+                    <!-- <tr class="border-b  hover:bg-[#C9C3A5]">
+                       <td class="px-6 py-3"> آنا پارسه</td>
+                       <td class=" px-6 py-3"> 0935</td>
+                       <td class="px-6 py-3"> مزوژل</td>
+                       <td class="px-6 py-3" id="visit-date-1"></td>
+                       <td class="px-6 py-3" id="visit-time-1"></td>
+                       <td class=" px-6 py-3 text-yellow-600 font-bold">تایید شد</td>
+                       <td class="px-6 py-3 flex justify-center space-x-2">
+                        <button class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500" onclick="editclient('Jane Doe')">ویرایش</button>
+                        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="deleteClient('Jane Doe')">حذف</button>
+                    </td>
+                    </tr>
+                    <tr class="border-b border-gray-500 hover:bg-[#C9C3A5]">
+                        <td class=" px-6 py-3">سهیل آگه</td>
+                        <td class=" px-6 py-3"> 0918</td>
+                        <td class="px-6 py-3">مزوتراپی</td>
+                        <td class="px-6 py-3" id="visit-date-2"></td>
+                        <td class="px-6 py-3" id="visit-time-2"></td>
+                        <td class=" px-6 py-3 text-pink-400 font-bold">در انتظار تایید</td>
+                        <td class="px-6 py-3 flex justify-center space-x-2">
+                        <button class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500" onclick="editclient('سهیل آگه')">ویرایش</button>
+                        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="deleteClient('سهیل آگه')">حذف</button>
+    
+                    </tr>
+                    <tr class="border-b border-gray-500 hover:bg-[#C9C3A5]">
+                        <td class=" px-6 py-3">رستا</td>
+                        <td class=" px-6 py-3">0910</td>
+                        <td class=" px-6 py-3">بوتاکس</td>
+                        <td class="px-6 py-3" id="visit-date-3"></td>
+                        <td class="px-6 py-3" id="visit-time-3"></td>
+                        <td class=" px-6 py-3 text-blue-400 font-bold">تکمیل شد</td>
+                        <td class=" px-6 py-3 flex justify-center space-x-2">
+                            <button class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500" onclick="editclient('سارا')">ویرایش</button>
+                        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="deleteClient('سارا')">حذف</button>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-4 sm:mt-8 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50 rounded-l-md">
+                    اول
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    قبلی
+                </a>
+            {% endif %}
+
+            {# صفحه اول #}
+            {% if page_obj.number > 3 %}
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    1
+                </a>
+                {% if page_obj.number > 4 %}
+                    <span class="px-2 py-2 text-gray-400">...</span>
+                {% endif %}
+            {% endif %}
+
+            {# دو صفحه قبل، صفحه فعلی، دو صفحه بعد #}
+            {% for i in page_obj.paginator.page_range %}
+                {% if i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                    {% if i == page_obj.number %}
+                        <span class="relative inline-flex items-center px-2 py-2 border border-blue-500 bg-blue-100 text-xs sm:text-sm font-bold text-blue-700">
+                            {{ i }}
+                        </span>
+                    {% else %}
+                        <a href="?page={{ i }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            {{ i }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {# صفحه آخر #}
+            {% if page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+                {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+                    <span class="px-2 py-2 text-gray-400">...</span>
+                {% endif %}
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    {{ page_obj.paginator.num_pages }}
+                </a>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    بعدی
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50 rounded-r-md">
+                    آخر
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %} 

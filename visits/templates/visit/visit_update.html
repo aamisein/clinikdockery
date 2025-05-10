@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load jalali_tags %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8  ">
+    <div class="max-w-2xl mx-auto bg-stone-400 opacity-80 backdrop-blur-xs p-8 border rounded-lg shadow-2xl">
+        <h2 class="text-2xl font-bold text-center mb-6">{{ title }}</h2>
+        <form method="post" class="text-gray-50">
+            {% csrf_token %}
+            {{ form.media }}
+            
+            <!-- First Name -->
+            <div class="mb-4 ">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+                {{ form.first_name.errors }}
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-4">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+                {{ form.last_name.errors }}
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-4">
+                {{ form.phone.label_tag }}
+                {{ form.phone }}
+                {{ form.phone.errors }}
+            </div>
+
+            <!-- Current Visit Date -->
+            <div class="mb-4">
+                {{ form.current_visit_date.label_tag }}
+                {{ form.current_visit_date }}
+                {{ form.current_visit_date.errors }}
+            </div>
+
+            <!-- Next Visit Date -->
+            <div class="mb-4">
+                {{ form.next_visit_date.label_tag }}
+                {{ form.next_visit_date }}
+                {{ form.next_visit_date.errors }}
+            </div>
+
+            <!-- Service -->
+            <div class="mb-4">
+                {{ form.service.label_tag }}
+                {{ form.service }}
+                {{ form.service.errors }}
+            </div>
+
+            <!-- SMS Sent -->
+            <div class="mb-4">
+                <div class="flex items-center">
+                    {{ form.SMS_sent }}
+                    <label for="{{ form.SMS_sent.id_for_label }}" class="mr-2">پیامک داده شده</label>
+                </div>
+                {{ form.SMS_sent.errors }}
+            </div>
+
+            <div class="flex justify-between">
+                <button type="submit" 
+                        class="w-1/2 bg-[#D64933] text-blue-200 py-2 rounded-md hover:text-stone-800 focus:ring-2 ring-stone-600 transition">
+                    ذخیره تغییرات
+                </button>
+                <a href="{{ request.GET.next|default:'visits:visit_list' }}" 
+                   class="w-1/2 bg-gray-500 text-white py-2 rounded-md hover:bg-gray-600 focus:ring-2 ring-gray-400 transition text-center">
+                    بازگشت
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

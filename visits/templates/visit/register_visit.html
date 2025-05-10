@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load jalali_tags %}
+{% load jformat %}
+
+
+
+{% block content %}
+
+<div class="text-gray-100 w-full max-w-full mb-10  bg-gradient-to-br from-yellow-950 to-neutral-400 p-4 rounded-md shadow-2xl"
+    x-data="{ tab: 'tab1' }">
+    <!--Tabs-->
+    <div class="flex border-b  ">
+        <button @click=" tab ='tab1' "
+            :class="text-gray-100 tab ==='tab1' ? 'border-stone-400 text-neutral-900' : 'border-transparent text-gray-500'"
+            class=" w-1/2 py-2  text-center border-b-4 font-medium"> ویزیت های امروز --
+            {{today|to_jalali:'%Y/%m/%d'}}</button>
+        <button @click="tab = 'tab2' "
+            :class="text-gray-100 tab === 'tab2' ? 'border-neutral-900 text-stone-400' : 'border-transparent text-gray-500'"
+            class="w-1/2 py-2 text-center border-b-4 font-medium"> نوبت های امروز </button>
+    </div>
+    <!--Tab Content-->
+    <div class="p-4 ">
+        <div x-cloak x-show="tab ==='tab1'" class="transition-all">
+            <h1 class="text-lg font-bold"> لیست مراجعین امروز </h1>
+            <ul
+                class="text-gray-700 bg-gray-100 rounded-md pt-1 pr-2 pb-1 flex flex-col ring-2 ring-gray-200 mt-2 ">
+                {% for visit in todayVisit %}
+                <li>{{ visit.first_name }} {{ visit.last_name }} - {{ visit.service.name }} - {{ visit.current_visit_date }}</li>
+                {% empty%}
+                <li class="text-gray-800  hover:bg-white/20 w-1/2 ">هنوز هیچ ویزیتی ثبت نشده</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="transition-all" x-cloak x-show=" tab ==='tab2'">
+            <h1 class="text-lg font-bold"> لیست نوبت های امروز</h1>
+            <ul
+                class="text-gray-700 bg-gray-100 rounded-md pt-1 pr-2 pb-1 flex flex-col ring-2 ring-gray-200 mt-2 ">
+                {%for turn in todayTurns%}
+                <li>{{ turn.first_name }} {{ turn.last_name }} - {{ turn.service.name }} - {{ turn. }}</li>
+                {% empty%}
+                <li class="text-gray-800  hover:bg-white/20 w-1/2 "> برای امروز نوبتی رزرو نشده </li>
+                {%endfor%}
+
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class=" bg-black/20 backdrop-blur-xs p-8 border   rounded-lg shadow-2xl w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">فرم ثبت نوبت</h2>
+    <form class="text-gray-50" method="post">
+        {% csrf_token %}
+       
+        {{ form.media }}
+        <!--First Name-->
+        <div class="mb-4">
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+            {{ form.first_name.errors }}
+        </div>
+        <!--Last Name-->
+        <div class="mb-4">
+            {{ form.last_name.label_tag }}
+            {{ form.last_name }}
+            {{ form.last_name.errors }}
+        </div>
+
+        <div>
+            {{ form.phone.label_tag }}
+            {{ form.phone }}
+            {{ form.phone.errors }}
+        </div>
+
+        <div>
+            {{ form.current_visit_date.label_tag }}
+            {{ form.current_visit_date }}
+            {{ form.current_visit_date.errors }}
+        </div>
+
+        <div>
+            {{ form.next_visit_date.label_tag }}
+            {{ form.next_visit_date }}
+            {{ form.next_visit_date.errors }}
+        </div>
+
+        <div>
+            {{ form.service.label_tag }}
+            {{ form.service }}
+            {{ form.service.errors }}
+        </div>
+
+
+        <button type="submit"
+            class="w-full bg-[#D64933]  text-blue-200 py-2 rounded-md hover:text-stone-800 focus:ring-2 ring-stone-600 transition">ثبت
+            نوبت</button>
+    </form>
+
+
+</div>
+
+
+{% endblock %}
+
+
+  
+
+
+
+
+
+
+

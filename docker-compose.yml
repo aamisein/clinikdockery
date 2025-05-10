@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
+      - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # dns:
+    #   - 178.22.122.100
+    #   - 185.51.200.2
+    depends_on:
+      - db
+      - rabbitmq
+
+  celery:
+    build: .
+    command: celery -A myproject worker -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
+      - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+    depends_on:
+      - web
+      - rabbitmq
+
+  celery-beat:
+    build: .
+    command: celery -A myproject beat -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+      - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
+      - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+    depends_on:
+      - web
+      - rabbitmq
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=app_db
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=app_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d app_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=app_user
+      - RABBITMQ_DEFAULT_PASS=app_password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  postgres_data:
+  rabbitmq_data: 

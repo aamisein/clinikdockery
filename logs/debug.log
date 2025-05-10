@@ -1,0 +1,155 @@
+INFO 2025-05-09 18:31:08,974 autoreload Watching for file changes with StatReloader
+WARNING 2025-05-09 18:33:14,007 log Not Found: /favicon.ico
+INFO 2025-05-09 18:35:16,795 autoreload /app/visits/models.py changed, reloading.
+INFO 2025-05-09 18:35:42,956 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:36:06,576 autoreload /app/myproject/celery.py changed, reloading.
+INFO 2025-05-09 18:36:16,948 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:37:17,843 autoreload /app/visits/models.py changed, reloading.
+INFO 2025-05-09 18:37:28,783 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:37:49,116 autoreload /app/visits/admin.py changed, reloading.
+INFO 2025-05-09 18:37:58,545 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:39:38,192 autoreload /app/myproject/celery.py changed, reloading.
+INFO 2025-05-09 18:39:50,283 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-09 18:40:17,206 log Internal Server Error: /admin/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "visits_smsconfiguration" does not exist
+LINE 1: SELECT 1 AS "a" FROM "visits_smsconfiguration" LIMIT 1
+                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 265, in wrapper
+    return self.admin_view(view, cacheable)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 562, in index
+    app_list = self.get_app_list(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 546, in get_app_list
+    app_dict = self._build_app_dict(request, app_label)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/contrib/admin/sites.py", line 492, in _build_app_dict
+    perms = model_admin.get_model_perms(request)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/contrib/admin/options.py", line 782, in get_model_perms
+    "add": self.has_add_permission(request),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/visits/admin.py", line 23, in has_add_permission
+    return not SMSConfiguration.objects.exists()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/models/query.py", line 1294, in exists
+    return self.query.has_results(using=self.db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/models/sql/query.py", line 674, in has_results
+    return compiler.has_results()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1591, in has_results
+    return bool(self.execute_sql(SINGLE))
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.11/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/usr/local/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "visits_smsconfiguration" does not exist
+LINE 1: SELECT 1 AS "a" FROM "visits_smsconfiguration" LIMIT 1
+                             ^
+
+INFO 2025-05-09 18:44:15,242 autoreload /app/visits/models.py changed, reloading.
+INFO 2025-05-09 18:44:18,246 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:44:38,783 autoreload /app/myproject/celery.py changed, reloading.
+INFO 2025-05-09 18:44:41,398 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:44:53,128 autoreload /app/myproject/celery.py changed, reloading.
+INFO 2025-05-09 18:44:58,024 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:45:06,368 autoreload /app/visits/models.py changed, reloading.
+INFO 2025-05-09 18:45:10,210 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:45:35,377 autoreload /app/visits/admin.py changed, reloading.
+INFO 2025-05-09 18:45:40,835 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 18:46:49,410 autoreload Watching for file changes with StatReloader
+WARNING 2025-05-09 18:47:38,917 log Not Found: /a
+INFO 2025-05-09 19:11:43,306 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:21:40,095 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:22:29,099 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:23:01,595 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:23:14,184 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:25:03,229 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:25:16,268 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:26:44,785 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:26:52,833 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:27:45,431 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:27:49,246 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:28:02,093 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:28:04,926 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:29:16,188 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:29:19,967 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:29:47,582 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:29:51,184 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:31:32,999 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:38:44,528 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:49:55,542 autoreload Watching for file changes with StatReloader
+WARNING 2025-05-09 19:50:28,535 log Not Found: /favicon.ico
+INFO 2025-05-09 19:52:25,772 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:52:31,343 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:53:07,039 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 19:53:29,687 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:56:27,105 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 19:58:13,380 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 20:04:43,467 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 20:06:22,303 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 20:06:24,858 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 20:06:33,523 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-09 20:06:37,219 autoreload Watching for file changes with StatReloader
+INFO 2025-05-09 20:11:19,188 autoreload Watching for file changes with StatReloader
+WARNING 2025-05-09 20:13:27,274 log Not Found: /favicon.ico
+INFO 2025-05-10 09:19:02,261 autoreload Watching for file changes with StatReloader
+INFO 2025-05-10 09:23:13,868 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-10 09:23:16,755 autoreload Watching for file changes with StatReloader
+INFO 2025-05-10 09:23:32,754 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-10 09:23:36,644 autoreload Watching for file changes with StatReloader
+INFO 2025-05-10 10:31:10,106 autoreload Watching for file changes with StatReloader
+WARNING 2025-05-10 10:35:38,777 log Not Found: /favicon.ico
+INFO 2025-05-10 10:39:05,700 autoreload /app/myproject/settings.py changed, reloading.
+INFO 2025-05-10 10:39:39,121 autoreload 133 139898537925504 Watching for file changes with StatReloader
+INFO 2025-05-10 10:39:39,121 autoreload 133 139898537925504 Watching for file changes with StatReloader
+INFO 2025-05-10 10:42:15,615 autoreload 7 140374523595648 Watching for file changes with StatReloader
+INFO 2025-05-10 10:42:15,615 autoreload 7 140374523595648 Watching for file changes with StatReloader
+INFO 2025-05-10 10:50:58,504 autoreload 7 140297903078272 Watching for file changes with StatReloader
+INFO 2025-05-10 10:50:58,504 autoreload 7 140297903078272 Watching for file changes with StatReloader

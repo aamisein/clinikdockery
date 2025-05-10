@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load jalali_tags %}
+
+{% block content %}
+<div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+    <!-- Search Box -->
+    <div class="mb-4 flex justify-center sm:mb-8 ">
+        <form method="get" class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            {{ form.media }}
+            {{ form.date }}
+            <button type="submit" 
+                    class="px-4 sm:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm sm:text-base">
+                جستجو
+            </button>
+        </form>
+    </div>
+
+    <!-- Appointments List -->
+    <div class="opacity-85 max-w-6xl mx-auto bg-[#C5C9A4] p-6 shadow-lg rounded-lg">
+        <h2 class="text-2xl font-bold text-[#dd7c27] mb-4">نوبت‌های آینده</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full border-collapse border border-gray-200 shadow-2xl rounded-lg">
+                <thead>
+                    <tr class="bg-[#FC9F5B] text-white">
+                        <th class="px-6 py-3 text-right">نام و نام خانوادگی</th>
+                        <th class="px-6 py-3 text-right">شماره همراه</th>
+                        <th class="px-6 py-3 text-right">نوع خدمت</th>
+                        <th class="px-6 py-3 text-right">تاریخ نوبت</th>
+                        <th class="px-6 py-3 text-right">عملیات</th>
+                        <th class=" px-6 py-3 text-center">اطلاع رسانی</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for appointment in appointments %}
+                        <tr class="border-b hover:bg-[#C9C3A5]">
+                            <td class="px-6 py-3">{{ appointment.first_name }} {{ appointment.last_name }}</td>
+                            <td class="px-6 py-3">{{ appointment.phone }}</td>
+                            <td class="px-6 py-3">{{ appointment.service.name }}</td>
+                            <td class="px-6 py-3">{{ appointment.next_visit_date }}</td>
+                            
+                            <td class="px-6 py-3 flex justify-center space-x-2">
+                                <a href="{% url 'visits:visit_update' appointment.pk %}?next={% url 'visits:appointment_list' %}" 
+                                   class="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500">ویرایش</a>
+                                <a href="{% url 'visits:visit_delete' appointment.pk %}?next={% url 'visits:appointment_list' %}" 
+                                   class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">حذف</a>
+                            </td>
+                            {%if appointment.SMS_sent %}
+                              <td class=" px-6 py-3 text-blue-400 font-bold"> یاد آوری شده</td>
+                            {%else%}
+                              <td class=" px-6 py-3 text-pink-400 font-bold">یا آوری نشده </td>
+                            {%endif%}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-3 text-center">هیچ نوبتی یافت نشد.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-4 flex justify-center space-x-2">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if form.date.value %}&date={{ form.date.value }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    اول
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if form.date.value %}&date={{ form.date.value }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    قبلی
+                </a>
+            {% endif %}
+
+            {% if page_obj.number > 3 %}
+                <a href="?page=1{% if form.date.value %}&date={{ form.date.value }}{% endif %}"
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    1
+                </a>
+                {% if page_obj.number > 4 %}
+                    <span class="px-2 py-2 text-gray-400">...</span>
+                {% endif %}
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+                {% if i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                    {% if i == page_obj.number %}
+                        <span class="relative inline-flex items-center px-2 py-2 border border-blue-500 bg-blue-100 text-xs sm:text-sm font-bold text-blue-700">
+                            {{ i }}
+                        </span>
+                    {% else %}
+                        <a href="?page={{ i }}{% if form.date.value %}&date={{ form.date.value }}{% endif %}"
+                           class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            {{ i }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if form.date.value %}&date={{ form.date.value }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    بعدی
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if form.date.value %}&date={{ form.date.value }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-xs sm:text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    آخر
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        $(".jalali_date-input").persianDatepicker({
+            format: 'YYYY-MM-DD',
+            initialValue: false,
+            autoClose: true
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 
