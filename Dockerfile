@@ -15,22 +15,23 @@ RUN apt-get update \
         libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set DNS
-# RUN echo "nameserver 178.22.122.100" > /etc/resolv.conf && \
-#     echo "nameserver 185.51.200.2" >> /etc/resolv.conf
-
-# Install Python dependencies
+# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Install gunicorn (if not in requirements.txt)
+RUN pip install gunicorn
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Copy project files
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
-# Expose port
+# Expose the port
 EXPOSE 8000
 
-# Run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] 
+# Set entrypoint and default command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["gunicorn", "your_project_name.wsgi:application", "--bind", "0.0.0.0:8000"]
