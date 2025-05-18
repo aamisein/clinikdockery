@@ -11,9 +11,14 @@ services:
       - DJANGO_SETTINGS_MODULE=myproject.settings
       - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
       - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+    volumes:
+      - .:/clinik
+      - clinik_static_volume:/clinik/static
+      
     depends_on:
       - db
       - rabbitmq
+    
 
   celery:
     build: .
@@ -61,4 +66,9 @@ services:
 
 volumes:
   postgres_data:
-  rabbitmq_data:
+    external: true
+  rabbitmq_data: 
+    external: true
+  clinik_static_volume:
+    
+

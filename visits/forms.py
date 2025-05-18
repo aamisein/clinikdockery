@@ -62,7 +62,7 @@ class AppointmentSearchForm(forms.Form):
         required=False,
         widget=AdminJalaliDateWidget(
             attrs={
-                'class': 'bg-white jalali_date-input w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500 text-gray-800',
+                'class': 'bg-white jalali_date-input flex-1 px-4 py-2 border border-white rounded-r-[20px] focus:outline-none focus:ring-2 focus:ring-stone-500 text-gray-800 m-0',
                 'placeholder': 'تاریخ نوبت را وارد کنید...'
             }
         )
