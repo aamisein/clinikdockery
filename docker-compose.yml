@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   web:
     build: .
-    command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 3 --reload
     ports:
       - "8000:8000"
     environment:
@@ -11,14 +9,17 @@ services:
       - DJANGO_SETTINGS_MODULE=myproject.settings
       - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
       - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+      - PYTHONUNBUFFERED=1
     volumes:
-      - .:/clinik
-      - clinik_static_volume:/clinik/static
-      
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     depends_on:
-      - db
-      - rabbitmq
-    
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    restart: always
 
   celery:
     build: .
@@ -28,9 +29,13 @@ services:
       - DJANGO_SETTINGS_MODULE=myproject.settings
       - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
       - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
     depends_on:
       - web
       - rabbitmq
+    restart: always
 
   celery-beat:
     build: .
@@ -40,9 +45,13 @@ services:
       - DJANGO_SETTINGS_MODULE=myproject.settings
       - DATABASE_URL=postgres://app_user:app_password@db:5432/app_db
       - RABBITMQ_URL=amqp://app_user:app_password@rabbitmq:5672//
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
     depends_on:
       - web
       - rabbitmq
+    restart: always
 
   db:
     image: postgres:15
@@ -52,6 +61,12 @@ services:
       - POSTGRES_DB=app_db
       - POSTGRES_USER=app_user
       - POSTGRES_PASSWORD=app_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -63,12 +78,14 @@ services:
       - RABBITMQ_DEFAULT_PASS=app_password
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
 
 volumes:
   postgres_data:
     external: true
-  rabbitmq_data: 
+  rabbitmq_data:
     external: true
-  clinik_static_volume:
-    
+  static_volume:
+  media_volume:
+     
 
