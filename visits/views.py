@@ -1,6 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Visit
@@ -13,6 +12,12 @@ from jalali_date import datetime2jalali, date2jalali
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from kavenegar import *
+import os
+from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class VisitCreateView(LoginRequiredMixin, CreateView):
     model = Visit
@@ -113,23 +118,53 @@ def home(request):
     return render(request, 'visits/home.html')
 
 @login_required
-def calculate_factorial_view(request):
+def register_visit(request):
     if request.method == 'POST':
-        try:
-            number = int(request.POST.get('number', 0))
-            # اجرای تسک به صورت ناهمگام
-            task = calculate_factorial.delay(number)
-            return JsonResponse({
-                'task_id': task.id,
-                'status': 'Task started'
-            })
-        except ValueError:
-            return JsonResponse({
-                'error': 'لطفا یک عدد معتبر وارد کنید'
-            }, status=400)
-    return JsonResponse({
-        'error': 'Method not allowed'
-    }, status=405)
+        form = VisitForm(request.POST)
+        if form.is_valid():
+            visit = form.save()
+            
+            # ارسال پیامک به بیمار
+            try:
+                api = KavenegarAPI(settings.KAVENEGAR_API_KEY)
+                params = {
+                    'receptor': visit.phone,
+                    'template': 'visit-confirmation',
+                    'token': visit.first_name,
+                    'token2': visit.service.name,
+                    'token3': visit.current_visit_date.strftime('%Y/%m/%d'),
+                }
+                response = api.verify_lookup(params)
+                messages.success(request, 'پیامک تایید با موفقیت ارسال شد.')
+                logger.info(f'SMS sent successfully to {visit.phone} for visit on {visit.current_visit_date}')
+            except APIException as e:
+                error_msg = f'خطا در ارسال پیامک: {str(e)}'
+                messages.warning(request, error_msg)
+                logger.error(f'SMS API error for {visit.phone}: {str(e)}')
+            except HTTPException as e:
+                error_msg = f'خطا در ارسال پیامک: {str(e)}'
+                messages.warning(request, error_msg)
+                logger.error(f'SMS HTTP error for {visit.phone}: {str(e)}')
+            except Exception as e:
+                error_msg = f'خطای غیرمنتظره در ارسال پیامک: {str(e)}'
+                messages.warning(request, error_msg)
+                logger.error(f'Unexpected error sending SMS to {visit.phone}: {str(e)}')
+            
+            messages.success(request, 'ویزیت با موفقیت ثبت شد.')
+            return redirect('register_visit')
+    else:
+        form = VisitForm()
+    
+    today = timezone.now()
+    todayVisit = Visit.objects.filter(current_visit_date__date=today.date())
+    todayTurns = Visit.objects.filter(next_visit_date__date=today.date())
+    
+    return render(request, 'visit/register_visit.html', {
+        'form': form,
+        'today': today,
+        'todayVisit': todayVisit,
+        'todayTurns': todayTurns
+    })
 
 
 

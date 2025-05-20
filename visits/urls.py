@@ -10,5 +10,4 @@ urlpatterns = [
     path('appointments/', views.AppointmentListView.as_view(), name='appointment_list'),
     path('visit/<int:pk>/edit/', views.VisitUpdateView.as_view(), name='visit_update'),
     path('visit/<int:pk>/delete/', views.VisitDeleteView.as_view(), name='visit_delete'),
-    path('calculate-factorial/', views.calculate_factorial_view, name='calculate_factorial'),
 ]

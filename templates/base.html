@@ -2,7 +2,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" class="light">
 
 <head>
     <meta charset="UTF-8">
@@ -19,7 +19,7 @@
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" as="script">
     <link rel="preload" href="https://code.jquery.com/jquery-3.6.0.min.js" as="script">
     
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}دکتر کربلایی فر | پنل پیامکی{% endblock %}</title>
     {% block extra_css %}{% endblock %}
     
     <!-- Prevent FOUC -->
@@ -29,11 +29,23 @@
             opacity: 0;
         }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1e40af",
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
-<body
-    class="no-fouc max-w-xl px-4 pt-12 mx-auto bg-gray-200 lg:max-w-6xl  bg-cover bg-center bg-no-repeat   text-gray-900 dark:bg-gray-900 dark:text-white transition-all duration-300"
-    style="background-image: url({% static 'img/photo-1612423950702-c86515507f7b.avif' %})">
+<body class="no-fouc max-w-xl px-4 pt-12 mx-auto bg-gray-200 lg:max-w-6xl text-gray-900 dark:bg-gray-900 dark:text-white transition-all duration-300">
+    {% block body_style %}{% endblock %}
 
     <div class=" flex flex-wrap items-center justify-between  sm:justify-start  sm:flex-nowrap w-full h-25 p-4 mb-8  sm:gap-4 rounded-b-2xl  sticky top-0  text-black  bg-white/25 backdrop-blur-md shadow-md z-[100]"
         x-data="{ dropdown : false }">
