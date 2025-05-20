@@ -42,38 +42,50 @@
     </button>
 </div>
 
-<div class="text-gray-100 w-full max-w-full mb-10 bg-gradient-to-br from-yellow-950 to-neutral-400 dark:from-gray-900 dark:to-gray-700 p-4 rounded-md shadow-2xl"
+<div class="text-gray-900 dark:text-gray-100 w-full max-w-full mb-10 bg-gradient-to-br from-yellow-950 to-neutral-400 dark:from-gray-900 dark:to-gray-700 p-4 rounded-md shadow-2xl"
     x-data="{ tab: 'tab1' }">
     <!--Tabs-->
     <div class="flex border-b border-gray-200 dark:border-gray-700">
         <button @click=" tab ='tab1' "
-            :class="text-gray-100 tab ==='tab1' ? 'border-stone-400 text-neutral-900 dark:border-gray-300 dark:text-gray-100' : 'border-transparent text-gray-500 dark:text-gray-400'"
-            class="w-1/2 py-2 text-center border-b-4 font-medium"> ویزیت های امروز --
+            :class="tab ==='tab1' ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'"
+            class="w-1/2 py-2 text-center border-b-4 font-medium transition-colors duration-200"> ویزیت های امروز --
             {{today|to_jalali:'%Y/%m/%d'}}</button>
         <button @click="tab = 'tab2' "
-            :class="text-gray-100 tab === 'tab2' ? 'border-neutral-900 text-stone-400 dark:border-gray-300 dark:text-gray-100' : 'border-transparent text-gray-500 dark:text-gray-400'"
-            class="w-1/2 py-2 text-center border-b-4 font-medium"> نوبت های امروز </button>
+            :class="tab === 'tab2' ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400'"
+            class="w-1/2 py-2 text-center border-b-4 font-medium transition-colors duration-200"> نوبت های امروز </button>
     </div>
     <!--Tab Content-->
     <div class="p-4">
         <div x-cloak x-show="tab ==='tab1'" class="transition-all">
-            <h1 class="text-lg font-bold text-gray-900 dark:text-gray-100"> لیست مراجعین امروز </h1>
-            <ul class="text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-md pt-1 pr-2 pb-1 flex flex-col ring-2 ring-gray-200 dark:ring-gray-700 mt-2">
+            <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4"> لیست مراجعین امروز </h1>
+            <ul class="text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg pt-2 pr-3 pb-2 flex flex-col ring-1 ring-gray-200 dark:ring-gray-700 mt-2 shadow-sm">
                 {% for visit in todayVisit %}
-                <li class="py-1">{{ visit.first_name }} {{ visit.last_name }} - {{ visit.service.name }} - {{ visit.current_visit_date }}</li>
+                <li class="py-2 px-3 text-gray-800 dark:text-gray-300 hover:bg-white/30 dark:hover:bg-gray-700/30 rounded-md transition-colors duration-200 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full"></span>
+                    {{ visit.first_name }} {{ visit.last_name }} - {{ visit.service.name }} - {{ visit.current_visit_date }}
+                </li>
                 {% empty%}
-                <li class="text-gray-800 dark:text-gray-300 hover:bg-white/20 w-1/2">هنوز هیچ ویزیتی ثبت نشده</li>
+                <li class="py-2 px-3 text-gray-800 dark:text-gray-300 hover:bg-white/30 dark:hover:bg-gray-700/30 rounded-md transition-colors duration-200 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full"></span>
+                    هنوز هیچ ویزیتی ثبت نشده
+                </li>
                 {% endfor %}
             </ul>
         </div>
 
         <div class="transition-all" x-cloak x-show=" tab ==='tab2'">
-            <h1 class="text-lg font-bold text-gray-900 dark:text-gray-100"> لیست نوبت های امروز</h1>
-            <ul class="text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-md pt-1 pr-2 pb-1 flex flex-col ring-2 ring-gray-200 dark:ring-gray-700 mt-2">
+            <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4"> لیست نوبت های امروز</h1>
+            <ul class="text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg pt-2 pr-3 pb-2 flex flex-col ring-1 ring-gray-200 dark:ring-gray-700 mt-2 shadow-sm">
                 {%for turn in todayTurns%}
-                <li class="py-1">{{ turn.first_name }} {{ turn.last_name }} - {{ turn.service.name }} - {{ turn. }}</li>
+                <li class="py-2 px-3 text-gray-800 dark:text-gray-300 hover:bg-white/30 dark:hover:bg-gray-700/30 rounded-md transition-colors duration-200 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full"></span>
+                    {{ turn.first_name }} {{ turn.last_name }} - {{ turn.service.name }} - {{ turn. }}
+                </li>
                 {% empty%}
-                <li class="text-gray-800 dark:text-gray-300 hover:bg-white/20 w-1/2"> برای امروز نوبتی رزرو نشده </li>
+                <li class="py-2 px-3 text-gray-800 dark:text-gray-300 hover:bg-white/30 dark:hover:bg-gray-700/30 rounded-md transition-colors duration-200 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full"></span>
+                    برای امروز نوبتی رزرو نشده
+                </li>
                 {%endfor%}
             </ul>
         </div>
